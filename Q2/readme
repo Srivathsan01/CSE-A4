@@ -1,0 +1,46 @@
+
+									QUESTION 2:
+The question  involves writing a simulation for biriyani serving.
+The code has been divided into three modules :
+
+1: Cooking Biriyani by robots
+2: Serving biriyani vessels to the table
+3: Student getting allocated to a vessel in one of the tables
+i
+									Cooking Biriyani :
+	
+void CookFood(int i)
+{
+	while(1)
+	{
+		if(Vessels[i]==0)
+		{
+			int c;
+			srand((i+1)*time(0)+i);
+			//w is the  time taken for the robot to create vessels
+			c = rand()%10 + 1;
+			// We have to calculate the new number of vessels created by robot
+			int tempvalue=rand()%10 + 1;
+			P[i] = rand()%15 + 1;
+			printf(" Robot %d is preparing %d briyani Vessels in %d seconds \n",i,tempvalue,w );
+			sleep(c);
+			//Storing the new value of vessels[i] after robot creation
+			Vessels[i] = tempvalue;
+			//Total number of vessels present must be increased after creation
+			VesselTot += Vessels[i];
+			printf(" Robot %d has finished cooking %d Vessels\n",i,Vessels[i]);
+		}
+	}
+}
+This functions makes the robots cook food.Here i is the table number.While thread is executing as an infinite loop we check whether number of vessels in a particular table is 0.So if it is 0 , more vessels are to be cooked by robot for serving.Thus we calculate number of vessels created using random function and time taken to create that much vessels.If they are created we increase number of vessels available by that amount after waiting for creation.Total vessels also changes.We finally print the message after robot has created that many vessels
+
+									Serving Biriyani:
+It takes table number as index.We declare a variable to check the quantity  present in a vessel in a particular table.If it is 0, then more vessels are to be created. We use pthread_mutex_lock() to lock the critical section. We then check if total vessels is >0 and accordingly decrement it by serving it onto the table we are iterating through .Total vessels created is decreased by 1 and a message stating that the vessel is placed on the table is obtained.Then we unlock the mutex.
+Further if the number of freeslots in a vessel of the given table is 0,Out of the p-x slots we have to create y more slots to serve the students.WE calculate the extra slots that can be served by using the random function.Then if qtypresent > 0, We decrease number of free slots as they are allocated to the students waiting for biriyani.WE then update current number of free slots present in a vessel in the given table.Total freeslots is updated
+
+									Students Allocation:
+
+We simulate arrival times through the sleep funciton in time.h .The arrival time is passed as an argument for which the thread sleeps.We increment the number f students allocated to keep track of numebr of students eating.
+If the total number of free slots is 0, then we make one guy waiting till he gets served.Meanwhile the cook biriyani and serve biriyani will be executing concurrently to serve the waiting guy.We use a mutex lock for it.
+Suppose if it is non zero,We iterate through all the tables to check currfreeslots[] and if it is positive the waiting student is allcoated to that particular slot in the table.The total number of freeslots and the number of free slots in the table here the student was allcoated aee updated accordingly.Here also utex is employed as critical section contains common variables which should not be changed by other threads which are executing.
+
